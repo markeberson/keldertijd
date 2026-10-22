@@ -172,6 +172,9 @@ select,.field input,.field textarea,.field select{border:1px solid var(--line);b
     <div class="field"><label for="drinkStatus">Drinkmoment</label><select id="drinkStatus"><option value="Onbekend">Onbekend</option><option value="Nu drinken">Nu drinken</option><option value="Verder bewaren">Verder bewaren</option></select></div>
     <div class="field"><label for="drinkFrom">Drinkvenster vanaf</label><input id="drinkFrom" type="number" min="1900" max="2200" placeholder="2025"></div>
     <div class="field"><label for="drinkTo">Drinkvenster tot</label><input id="drinkTo" type="number" min="1900" max="2200" placeholder="2032"></div>
+    <div class="field full"><label for="agingPotential">Rijpingspotentieel (AI)</label><textarea id="agingPotential" placeholder="AI-advies over jong drinken of bewaren"></textarea></div>
+    <div class="field full"><label for="drinkWindowAdvice">Drinkadvies (AI)</label><textarea id="drinkWindowAdvice" placeholder="Toelichting op het ideale drinkvenster"></textarea></div>
+    <div class="field full" id="aiDebugWrap" style="display:none"><label for="aiRawResponse">Volledige AI-response (controle)</label><textarea id="aiRawResponse" readonly style="min-height:180px;font-family:ui-monospace,monospace;font-size:12px"></textarea></div>
     <div class="field"><label for="grapeVariety">Druivenras(sen)</label><input id="grapeVariety" placeholder="Bijv. Nebbiolo"></div>
     <div class="field"><label for="acidityLevel">Zuurgraad</label><select id="acidityLevel"><option value="">Onbekend</option><option>Laag</option><option>Gemiddeld</option><option>Hoog</option></select></div>
     <div class="field"><label for="tanninLevel">Tannines</label><select id="tanninLevel"><option value="">Onbekend</option><option>Laag</option><option>Gemiddeld</option><option>Hoog</option></select></div>
@@ -416,6 +419,10 @@ function openAdd() {
   $('bottleForm').reset();
   $('bottleId').value = '';
   $('quantity').value = 1;
+  $('agingPotential').value = '';
+  $('drinkWindowAdvice').value = '';
+  $('aiRawResponse').value = '';
+  $('aiDebugWrap').style.display = 'none';
   $('modalTitle').textContent = 'Fles toevoegen';
   $('deleteBtn').style.display = 'none';
   $('modalBack').classList.add('show');
@@ -426,11 +433,44 @@ function editBottle(id) {
   for (const k of ['id','name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','grapeVariety','aromaProfile','acidityLevel','tanninLevel','bodyLevel','oakProfile','profileSummary','scoreValue','scoreOutOf','scoreSource','scoreUrl','tasting','notes']) {
     $(k === 'id' ? 'bottleId' : k === 'status' ? 'drinkStatus' : k).value = b[k] ?? '';
   }
+  $('agingPotential').value = b.agingPotential || '';
+  $('drinkWindowAdvice').value = b.drinkWindowAdvice || '';
+  $('aiRawResponse').value = '';
+  $('aiDebugWrap').style.display = 'none';
   $('modalTitle').textContent = 'Fles bewerken';
   $('deleteBtn').style.display = 'inline-block';
   $('modalBack').classList.add('show');
 }
 function closeModal() { $('modalBack').classList.remove('show'); }
+
+// Bepaal het drinkmoment op basis van het ingevulde drinkvenster.
+// Zonder bruikbaar drinkvenster blijft de keuze ongewijzigd.
+function updateDrinkStatusFromWindow() {
+  const from = Number($('drinkFrom').value);
+  const to = Number($('drinkTo').value);
+  const currentYear = new Date().getFullYear();
+  if (!Number.isFinite(from) || !Number.isFinite(to) || !from || !to || to < from) return;
+
+  // Vóór het venster: bewaren. Vanaf het begin van het venster: nu drinken.
+  $('drinkStatus').value = currentYear < from ? 'Verder bewaren' : 'Nu drinken';
+
+  const label = document.querySelector('label[for="drinkStatus"]');
+  if (label) {
+    let hint = label.querySelector('[data-drink-window-hint]');
+    if (!hint) {
+      hint = document.createElement('span');
+      hint.dataset.drinkWindowHint = 'true';
+      hint.style.cssText = 'display:block;font-size:11px;font-weight:400;color:#64748b;margin-top:3px;';
+      label.appendChild(hint);
+    }
+    if (currentYear < from) hint.textContent = `Automatisch bepaald: bewaren tot ongeveer ${from}.`;
+    else if (currentYear > to) hint.textContent = `Let op: het opgegeven drinkvenster eindigde in ${to}; de wijn kan over zijn hoogtepunt zijn.`;
+    else hint.textContent = `Automatisch bepaald op basis van drinkvenster ${from}–${to}.`;
+  }
+}
+
+$('drinkFrom').addEventListener('change', updateDrinkStatusFromWindow);
+$('drinkTo').addEventListener('change', updateDrinkStatusFromWindow);
 
 $('addBtn').onclick = openAdd;
 $('closeModal').onclick = closeModal;
@@ -445,7 +485,7 @@ $('bottleForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const oldId = $('bottleId').value;
   const b = {};
-for (const k of ['name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','grapeVariety','aromaProfile','acidityLevel','tanninLevel','bodyLevel','oakProfile','profileSummary','scoreValue','scoreOutOf','scoreSource','scoreUrl','tasting','notes']) {
+for (const k of ['name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','grapeVariety','aromaProfile','acidityLevel','tanninLevel','bodyLevel','oakProfile','profileSummary','scoreValue','scoreOutOf','scoreSource','scoreUrl','tasting','notes','agingPotential','drinkWindowAdvice']) {
   const field = $(k === 'status' ? 'drinkStatus' : k);
 
   if (!field) {
@@ -619,6 +659,9 @@ $('recognizeWineBtn').addEventListener('click', async () => {
     }
 
     const wine = data.wine;
+    // Toon de volledige response om nieuwe AI-velden direct te controleren.
+    $('aiDebugWrap').style.display = 'block';
+    $('aiRawResponse').value = JSON.stringify(data, null, 2);
     const statusNames = {
       gevonden: 'gevonden',
       niet_vermeld: 'niet vermeld / niet vastgesteld',
@@ -675,6 +718,12 @@ $('recognizeWineBtn').addEventListener('click', async () => {
     setAIField('producer', wine.producer);
     setAIField('year', wine.year, { number: true });
     setAIField('region', wine.region);
+    setAIField('drinkFrom', wine.drinkWindowFrom, { number: true });
+    setAIField('drinkTo', wine.drinkWindowTo, { number: true });
+    // Stel drinkmoment automatisch in zodra de AI een bruikbaar venster heeft ingevuld.
+    updateDrinkStatusFromWindow();
+    setAIField('agingPotential', wine.agingPotential);
+    setAIField('drinkWindowAdvice', wine.drinkWindowAdvice);
     setAIField('grapeVariety', wine.grapeVariety);
     setAIField('aromaProfile', wine.aromaProfile);
     setAIField('oakProfile', wine.oakProfile);
