@@ -136,19 +136,55 @@ select,.field input,.field textarea,.field select{border:1px solid var(--line);b
   <div class="modalhead"><h2 id="modalTitle">Fles toevoegen</h2><button class="close" id="closeModal" aria-label="Sluiten">×</button></div>
   <form id="bottleForm">
     <input type="hidden" id="bottleId">
+    <!-- AI-wijnetiketherkenning -->
+    <div class="field full">
+      <label for="wineLabelPhoto">Wijnetiket herkennen met AI</label>
+
+      <input
+        id="wineLabelPhoto"
+        type="file"
+        accept="image/*"
+        capture="environment"
+      >
+
+      <button
+        type="button"
+        class="btn"
+        id="recognizeWineBtn"
+        style="margin-top:10px"
+      >
+        ✨ Herken etiket met AI
+      </button>
+
+      <p class="hint" id="labelRecognitionMessage">
+        Maak een foto van het etiket of kies een bestaande foto.
+      </p>
+    </div>
     <div class="formgrid">
-      <div class="field"><label for="name">Naam van de drank *</label><input id="name" required placeholder="Bijv. Barolo DOCG"></div>
-      <div class="field"><label for="type">Soort drank *</label><select id="type" required><option>Wijn</option><option>Bier</option><option>Whisky</option><option>Rum</option><option>Port</option><option>Champagne</option><option>Overig</option></select></div>
-      <div class="field"><label for="producer">Producent / brouwerij</label><input id="producer" placeholder="Producent"></div>
-      <div class="field"><label for="year">Jaargang / batchjaar</label><input id="year" type="number" min="1900" max="2100" placeholder="2021"></div>
-      <div class="field"><label for="region">Regio / land</label><input id="region" placeholder="Piemonte, Italië"></div>
-      <div class="field"><label for="quantity">Aantal flessen *</label><input id="quantity" type="number" min="1" value="1" required></div>
-      <div class="field"><label for="price">Aankoopprijs per fles (€)</label><input id="price" type="number" min="0" step="0.01" placeholder="24.95"></div>
-      <div class="field"><label for="drinkStatus">Drinkmoment</label><select id="drinkStatus"><option>Onbekend</option><option>Nu drinken</option><option>Verder bewaren</option></select></div>
-      <div class="field"><label for="drinkFrom">Drinkvenster vanaf</label><input id="drinkFrom" type="number" min="1900" max="2200" placeholder="2025"></div>
-      <div class="field"><label for="drinkTo">Drinkvenster tot</label><input id="drinkTo" type="number" min="1900" max="2200" placeholder="2032"></div>
-      <div class="field full"><label for="tasting">Proefnotities / smaak</label><textarea id="tasting" placeholder="Kers, kruiden, geroosterd mout…"></textarea></div>
-      <div class="field full"><label for="notes">Eigen notities</label><textarea id="notes" placeholder="Waar gekocht, bewaarplek, gelegenheid…"></textarea></div>
+
+    <div class="field"><label for="name">Naam van de drank *</label><input id="name" required placeholder="Bijv. Barolo DOCG"></div>
+    <div class="field"><label for="type">Soort drank *</label><select id="type" required><option value="Wijn">Wijn</option><option value="Bier">Bier</option><option value="Whisky">Whisky</option><option value="Rum">Rum</option><option value="Port">Port</option><option value="Champagne">Champagne</option><option value="Overig">Overig</option></select></div>
+    <div class="field"><label for="producer">Producent / brouwerij</label><input id="producer" placeholder="Producent"></div>
+    <div class="field"><label for="year">Jaargang / batchjaar</label><input id="year" type="number" min="1900" max="2100" placeholder="2021"></div>
+    <div class="field"><label for="region">Regio / land</label><input id="region" placeholder="Piemonte, Italië"></div>
+    <div class="field"><label for="quantity">Aantal flessen *</label><input id="quantity" type="number" min="1" value="1" required></div>
+    <div class="field"><label for="price">Aankoopprijs per fles (€)</label><input id="price" type="number" min="0" step="0.01" placeholder="24.95"></div>
+    <div class="field"><label for="drinkStatus">Drinkmoment</label><select id="drinkStatus"><option value="Onbekend">Onbekend</option><option value="Nu drinken">Nu drinken</option><option value="Verder bewaren">Verder bewaren</option></select></div>
+    <div class="field"><label for="drinkFrom">Drinkvenster vanaf</label><input id="drinkFrom" type="number" min="1900" max="2200" placeholder="2025"></div>
+    <div class="field"><label for="drinkTo">Drinkvenster tot</label><input id="drinkTo" type="number" min="1900" max="2200" placeholder="2032"></div>
+    <div class="field"><label for="grapeVariety">Druivenras(sen)</label><input id="grapeVariety" placeholder="Bijv. Nebbiolo"></div>
+    <div class="field"><label for="acidityLevel">Zuurgraad</label><select id="acidityLevel"><option value="">Onbekend</option><option>Laag</option><option>Gemiddeld</option><option>Hoog</option></select></div>
+    <div class="field"><label for="tanninLevel">Tannines</label><select id="tanninLevel"><option value="">Onbekend</option><option>Laag</option><option>Gemiddeld</option><option>Hoog</option></select></div>
+    <div class="field"><label for="bodyLevel">Body / mondgevoel</label><select id="bodyLevel"><option value="">Onbekend</option><option>Licht</option><option>Gemiddeld</option><option>Vol</option></select></div>
+    <div class="field"><label for="oakProfile">Houtgebruik / houtrijping</label><input id="oakProfile" placeholder="Bijv. Frans eiken, 12 maanden"></div>
+    <div class="field full"><label for="aromaProfile">Aromaprofiel</label><textarea id="aromaProfile" placeholder="Bijv. kersen, rozen, tabak, aardse tonen"></textarea></div>
+    <div class="field full"><label for="profileSummary">Wijnprofiel in het kort</label><textarea id="profileSummary" placeholder="Karakter, stijl en wat deze wijn bijzonder maakt"></textarea></div>
+    <div class="field"><label for="scoreValue">Wijnscore</label><input id="scoreValue" type="number" min="0" max="100" step="0.1" placeholder="Bijv. 92"></div>
+    <div class="field"><label for="scoreOutOf">Score maximaal</label><input id="scoreOutOf" type="number" min="1" step="1" value="100"></div>
+    <div class="field"><label for="scoreSource">Bron van de score</label><input id="scoreSource" placeholder="Bijv. Wine Enthusiast"></div>
+    <div class="field"><label for="scoreUrl">Link naar de score</label><input id="scoreUrl" type="url" placeholder="https://..."></div>
+    <div class="field full"><label for="tasting">Proefnotities / jouw eigen proefervaring</label><textarea id="tasting" placeholder="Wat proef je zelf in deze wijn?"></textarea></div>
+    <div class="field full"><label for="notes">Eigen notities</label><textarea id="notes" placeholder="Waar gekocht, bewaarplek, gelegenheid…"></textarea></div>
     </div>
     <p class="hint">Voer in wat je weet; drinkvensters kun je later aanvullen.</p>
     <div class="formactions"><button type="button" class="btn" id="deleteBtn" style="display:none">Verwijderen</button><div style="margin-left:auto;display:flex;gap:8px"><button type="button" class="btn" id="cancelBtn">Annuleren</button><button type="submit" class="btn primary">Opslaan</button></div></div>
@@ -201,6 +237,7 @@ function updateAccountUI() {
   if (currentUser) message('Ingelogd als ' + currentUser.email + '. Je kelder wordt online opgeslagen.');
 }
 
+
 function toDb(b) {
   return {
     user_id: currentUser.id,
@@ -214,20 +251,53 @@ function toDb(b) {
     status: b.status || 'Onbekend',
     drink_from: b.drinkFrom ? Number(b.drinkFrom) : null,
     drink_to: b.drinkTo ? Number(b.drinkTo) : null,
+    grape_variety: b.grapeVariety || null,
+    aroma_profile: b.aromaProfile || null,
+    acidity_level: b.acidityLevel || null,
+    tannin_level: b.tanninLevel || null,
+    body_level: b.bodyLevel || null,
+    oak_profile: b.oakProfile || null,
+    profile_summary: b.profileSummary || null,
+    score_value: b.scoreValue !== '' && b.scoreValue != null ? Number(b.scoreValue) : null,
+    score_out_of: b.scoreOutOf !== '' && b.scoreOutOf != null ? Number(b.scoreOutOf) : null,
+    score_source: b.scoreSource || null,
+    score_url: b.scoreUrl || null,
     tasting: b.tasting || null,
     notes: b.notes || null
   };
 }
 
+
+
 function fromDb(b) {
   return {
-    id:b.id, name:b.name, type:b.type, producer:b.producer || '',
-    year:b.year || '', region:b.region || '', quantity:b.quantity || 1,
-    price:b.price ?? '', status:b.status || 'Onbekend',
-    drinkFrom:b.drink_from || '', drinkTo:b.drink_to || '',
-    tasting:b.tasting || '', notes:b.notes || ''
+    id: b.id,
+    name: b.name,
+    type: b.type,
+    producer: b.producer || '',
+    year: b.year || '',
+    region: b.region || '',
+    quantity: b.quantity || 1,
+    price: b.price ?? '',
+    status: b.status || 'Onbekend',
+    drinkFrom: b.drink_from || '',
+    drinkTo: b.drink_to || '',
+    grapeVariety: b.grape_variety || '',
+    aromaProfile: b.aroma_profile || '',
+    acidityLevel: b.acidity_level || '',
+    tanninLevel: b.tannin_level || '',
+    bodyLevel: b.body_level || '',
+    oakProfile: b.oak_profile || '',
+    profileSummary: b.profile_summary || '',
+    scoreValue: b.score_value ?? '',
+    scoreOutOf: b.score_out_of ?? 100,
+    scoreSource: b.score_source || '',
+    scoreUrl: b.score_url || '',
+    tasting: b.tasting || '',
+    notes: b.notes || ''
   };
 }
+
 
 async function loadCloud() {
   if (!currentUser || !client) return;
@@ -353,7 +423,7 @@ function openAdd() {
 function editBottle(id) {
   const b = bottles.find(x=>x.id===id);
   if (!b) return;
-  for (const k of ['id','name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','tasting','notes']) {
+  for (const k of ['id','name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','grapeVariety','aromaProfile','acidityLevel','tanninLevel','bodyLevel','oakProfile','profileSummary','scoreValue','scoreOutOf','scoreSource','scoreUrl','tasting','notes']) {
     $(k === 'id' ? 'bottleId' : k === 'status' ? 'drinkStatus' : k).value = b[k] ?? '';
   }
   $('modalTitle').textContent = 'Fles bewerken';
@@ -375,7 +445,7 @@ $('bottleForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const oldId = $('bottleId').value;
   const b = {};
-for (const k of ['name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','tasting','notes']) {
+for (const k of ['name','type','producer','year','region','quantity','price','status','drinkFrom','drinkTo','grapeVariety','aromaProfile','acidityLevel','tanninLevel','bodyLevel','oakProfile','profileSummary','scoreValue','scoreOutOf','scoreSource','scoreUrl','tasting','notes']) {
   const field = $(k === 'status' ? 'drinkStatus' : k);
 
   if (!field) {
@@ -484,6 +554,229 @@ $('logoutBtn').onclick = async()=>{
   render();
   message('Je bent uitgelogd.');
 };
+
+// ==========================================
+// AI-WIJNETIKET HERKENNEN VIA SUPABASE
+// ==========================================
+
+$('recognizeWineBtn').addEventListener('click', async () => {
+  const fileInput = $('wineLabelPhoto');
+  const statusMessage = $('labelRecognitionMessage');
+  const button = $('recognizeWineBtn');
+  const file = fileInput.files?.[0];
+
+  if (!currentUser || !client) {
+    statusMessage.textContent = 'Log eerst in op Keldertijd om AI-herkenning te gebruiken.';
+    return;
+  }
+  if (!file) {
+    statusMessage.textContent = 'Kies eerst een foto van het wijnetiket.';
+    return;
+  }
+  if (!file.type.startsWith('image/')) {
+    statusMessage.textContent = 'Kies een geldig afbeeldingsbestand.';
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = '⏳ Etiket wordt herkend...';
+  statusMessage.textContent = 'De AI analyseert het etiket. Dit kan even duren.';
+
+  try {
+    const imageData = await new Promise((resolve, reject) => {
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      image.onload = () => {
+        try {
+          const maxSize = 1600;
+          const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(image.width * scale);
+          canvas.height = Math.round(image.height * scale);
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('De foto kon niet worden verwerkt.');
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(objectUrl);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        } catch (error) {
+          URL.revokeObjectURL(objectUrl);
+          reject(error);
+        }
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('De foto kon niet worden geopend.'));
+      };
+      image.src = objectUrl;
+    });
+
+    const { data, error } = await client.functions.invoke('recognize-wine-label', {
+      body: { imageBase64: imageData, mimeType: 'image/jpeg' }
+    });
+    if (error) throw new Error(error.message || 'De verbinding met de AI is mislukt.');
+    if (!data?.success || !data?.wine) {
+      throw new Error(data?.error || 'Er kon geen wijninformatie worden herkend.');
+    }
+
+    const wine = data.wine;
+    const statusNames = {
+      gevonden: 'gevonden',
+      niet_vermeld: 'niet vermeld / niet vastgesteld',
+      niet_leesbaar: 'niet leesbaar',
+      onzeker: 'onzeker — controleer dit',
+      niet_van_toepassing: 'niet van toepassing'
+    };
+
+    // Ondersteunt zowel het nieuwe { value, status }-formaat als de oude platte waarden.
+    function fieldValue(field) {
+      if (field && typeof field === 'object' && Object.prototype.hasOwnProperty.call(field, 'value')) {
+        return field.value;
+      }
+      return field ?? null;
+    }
+    function fieldStatus(field) {
+      if (field && typeof field === 'object' && field.status) return field.status;
+      return fieldValue(field) !== null && fieldValue(field) !== '' ? 'gevonden' : 'onzeker';
+    }
+    function setAIField(id, field, options = {}) {
+      const element = $(id);
+      if (!element) return;
+      const value = fieldValue(field);
+      const status = fieldStatus(field);
+      if (value !== null && value !== undefined && String(value).trim() !== '') {
+        if (options.number) {
+          const number = Number(value);
+          if (Number.isFinite(number)) element.value = number;
+        } else if (options.selectValues) {
+          const raw = String(value).toLowerCase();
+          const match = options.selectValues.find(item => item.value.toLowerCase() === raw)
+            || options.selectValues.find(item => item.value.toLowerCase().includes(raw) || raw.includes(item.value.toLowerCase()));
+          if (match) element.value = match.value;
+          else if (options.fallbackUnknown) element.value = '';
+        } else {
+          element.value = String(value);
+        }
+      }
+      const label = document.querySelector(`label[for="${id}"]`);
+      if (label) {
+        let badge = label.querySelector('[data-ai-field-status]');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.dataset.aiFieldStatus = 'true';
+          badge.style.cssText = 'display:inline-block;margin-left:7px;font-size:11px;font-weight:400;color:#64748b;';
+          label.appendChild(badge);
+        }
+        badge.textContent = '· ' + (statusNames[status] || 'status onbekend');
+        badge.title = 'Status van de AI-herkenning';
+      }
+    }
+
+    setAIField('name', wine.name);
+    setAIField('producer', wine.producer);
+    setAIField('year', wine.year, { number: true });
+    setAIField('region', wine.region);
+    setAIField('grapeVariety', wine.grapeVariety);
+    setAIField('aromaProfile', wine.aromaProfile);
+    setAIField('oakProfile', wine.oakProfile);
+    setAIField('profileSummary', wine.profileSummary);
+    setAIField('scoreValue', wine.scoreValue, { number: true });
+    setAIField('scoreOutOf', wine.scoreOutOf, { number: true });
+    setAIField('scoreSource', wine.scoreSource);
+    setAIField('scoreUrl', wine.scoreUrl);
+
+    // De database/formulieren gebruiken keuzelijsten. Vertaal de vrije AI-beschrijving
+    // naar een passende keuze; als dat niet kan, laat de keuze op Onbekend staan.
+    function mapLevel(field, targetId, mapping) {
+      const value = fieldValue(field);
+      const element = $(targetId);
+      if (!element) return;
+      if (value) {
+        const text = String(value).toLowerCase();
+        let chosen = '';
+        for (const [terms, option] of mapping) {
+          if (terms.some(term => text.includes(term))) { chosen = option; break; }
+        }
+        element.value = chosen;
+      }
+      const label = document.querySelector(`label[for="${targetId}"]`);
+      if (label) {
+        let badge = label.querySelector('[data-ai-field-status]');
+        if (!badge) {
+          badge = document.createElement('span');
+          badge.dataset.aiFieldStatus = 'true';
+          badge.style.cssText = 'display:inline-block;margin-left:7px;font-size:11px;font-weight:400;color:#64748b;';
+          label.appendChild(badge);
+        }
+        badge.textContent = '· ' + (statusNames[fieldStatus(field)] || 'status onbekend');
+      }
+    }
+    mapLevel(wine.acidityLevel, 'acidityLevel', [
+      [['laag', 'zacht', 'mild'], 'Laag'],
+      [['gemiddeld', 'matig', 'gebalanceerd'], 'Gemiddeld'],
+      [['hoog', 'fris', 'levendig', 'uitgesproken'], 'Hoog']
+    ]);
+    mapLevel(wine.tanninLevel, 'tanninLevel', [
+      [['laag', 'zacht', 'weinig', 'soepel'], 'Laag'],
+      [['gemiddeld', 'matig', 'elegant'], 'Gemiddeld'],
+      [['hoog', 'stevig', 'krachtig', 'veel'], 'Hoog']
+    ]);
+    mapLevel(wine.bodyLevel, 'bodyLevel', [
+      [['licht', 'slank'], 'Licht'],
+      [['gemiddeld', 'medium', 'medium-bodied'], 'Gemiddeld'],
+      [['vol', 'krachtig', 'rijk'], 'Vol']
+    ]);
+
+    const typeValue = String(fieldValue(wine.wineType) || '').toLowerCase();
+    if (['rood', 'wit', 'rosé', 'rose', 'mousserend', 'dessertwijn', 'overig'].includes(typeValue)) {
+      $('type').value = 'Wijn';
+    } else if (typeValue.includes('champagne')) {
+      $('type').value = 'Champagne';
+    } else if (typeValue.includes('bier')) {
+      $('type').value = 'Bier';
+    } else if (typeValue.includes('whisky') || typeValue.includes('whiskey')) {
+      $('type').value = 'Whisky';
+    } else if (typeValue.includes('rum')) {
+      $('type').value = 'Rum';
+    } else if (typeValue.includes('port')) {
+      $('type').value = 'Port';
+    } else if (typeValue) {
+      $('type').value = 'Overig';
+    }
+    const typeLabel = document.querySelector('label[for="type"]');
+    if (typeLabel) {
+      let badge = typeLabel.querySelector('[data-ai-field-status]');
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.dataset.aiFieldStatus = 'true';
+        badge.style.cssText = 'display:inline-block;margin-left:7px;font-size:11px;font-weight:400;color:#64748b;';
+        typeLabel.appendChild(badge);
+      }
+      badge.textContent = '· ' + (statusNames[fieldStatus(wine.wineType)] || 'status onbekend');
+    }
+
+    const confidenceValue = Number(wine.confidence);
+    const confidenceText = Number.isFinite(confidenceValue)
+      ? `Zekerheid: ${Math.round(confidenceValue * 100)}%. `
+      : '';
+    const notFound = Object.entries(wine)
+      .filter(([key, value]) => key !== 'confidence' && fieldStatus(value) !== 'gevonden')
+      .map(([key]) => key);
+    const statusText = notFound.length
+      ? ` Controleer vooral de velden met een status anders dan 'gevonden' (${notFound.length}).`
+      : ' Alle herkende velden hebben de status gevonden.';
+
+    statusMessage.textContent = '✅ Etiket herkend. ' + confidenceText +
+      'De waarden zijn ingevuld; de kleine status naast ieder veld geeft aan hoe de AI de informatie heeft beoordeeld.' +
+      statusText + ' Controleer alles en klik daarna zelf op Opslaan.';
+  } catch (error) {
+    console.error('Wijnherkenning mislukt:', error);
+    statusMessage.textContent = '❌ Herkenning mislukt: ' +
+      (error.message || 'Onbekende fout') + '. Controleer je login, Gemini-quota en Supabase-functie.';
+  } finally {
+    button.disabled = false;
+    button.textContent = '✨ Herken etiket met AI';
+  }
+});
 
 updateAccountUI();
 init();
